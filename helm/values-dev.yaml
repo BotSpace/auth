@@ -1,0 +1,39 @@
+# Dev environment overrides — merged on top of values.yaml
+image:
+  tag: "1.0.24-dev"
+
+env:
+  - name: GOOGLE_CLIENT_ID
+    valueFrom:
+      secretKeyRef:
+        name: google
+        key: GOOGLE_CLIENT_ID
+  - name: GIN_MODE
+    value: "debug"
+  - name: ADDR
+    value: ":8080"
+  - name: DATABASE_TYPE
+    value: "postgres"
+  - name: DATABASE_DSN
+    valueFrom:
+      secretKeyRef:
+        name: database-secret
+        key: DB_DSN
+  - name: PRIVATE_KEY
+    valueFrom:
+      secretKeyRef:
+        name: jwt-secret
+        key: PRIVATE_KEY
+  - name: PUBLIC_KEY
+    valueFrom:
+      secretKeyRef:
+        name: jwt-secret
+        key: PUBLIC_KEY
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
