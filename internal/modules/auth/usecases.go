@@ -151,11 +151,12 @@ func (a *AuthUsecaseImpl) Register(ctx context.Context, user *User) (*User, erro
 
 func (a *AuthUsecaseImpl) AccessToken(user *User) string {
 	claims := jwt.MapClaims{
-		"user_id":    user.ID,
-		"exp":        time.Now().Add(time.Minute * time.Duration(a.cfg.AccessExp)).Unix(),
-		"token_type": "access",
-		"jti":        utils.RandomString(20, "1234567890"),
-		"role":       user.Role,
+		"user_id":      user.ID,
+		"exp":          time.Now().Add(time.Minute * time.Duration(a.cfg.AccessExp)).Unix(),
+		"token_type":   "access",
+		"jti":          utils.RandomString(20, "1234567890"),
+		"role":         user.Role,
+		"prompt_limit": user.PromptLimit,
 	}
 	token, err := utils.CreateJWT(claims, a.cfg.PrivateKey)
 	if err != nil {

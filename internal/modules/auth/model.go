@@ -23,6 +23,7 @@ type User struct {
 	UserName        *string    `gorm:"column:username;uniqueIndex;default:null"`
 	Balance         int        `gorm:"column:balance"`
 	TemplateBalance string     `gorm:"column:template_balance;default:0"`
+	PromptLimit     int        `gorm:"column:prompt_limit;default:5"`
 	IsSuperuser     *bool      `gorm:"column:is_superuser;default:false"`
 	IsStaff         *bool      `gorm:"column:is_staff;default:false"`
 	IsActive        *bool      `gorm:"column:is_active;default:true"`
