@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: registry.jscorp.uz/auth
-  tag: "8fb50b0"
+  tag: "b8b8595"
   pullPolicy: Always
 
 imagePullSecrets:
