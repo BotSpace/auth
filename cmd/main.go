@@ -15,6 +15,7 @@ import (
 	"github.com/JscorpTech/auth/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
@@ -71,6 +72,9 @@ func main() {
 	db.AutoMigrate(&auth.Otp{})
 
 	router := gin.Default()
+
+	// Prometheus metrics endpoint (default Go runtime + process collectors).
+	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	router.GET("/api/v1/auth/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	api := router.Group("/api/v1/auth")
