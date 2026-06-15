@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: registry.jscorp.uz/auth
+  repository: registry.iprogrammer.uz/botspace/auth
   tag: "afaf267"
   pullPolicy: Always
 
