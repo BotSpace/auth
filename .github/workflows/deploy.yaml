@@ -57,3 +57,5 @@ jobs:
           git add helm/values.yaml
           git diff --cached --quiet || git commit -m "deploy: update image tag to ${{ env.SHORT_SHA }}"
           git push origin main
+
+# self-hosted runner
