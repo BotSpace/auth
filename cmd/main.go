@@ -51,7 +51,10 @@ func main() {
 		logger.Info(".env load error")
 	}
 
-	cfg := config.NewConfig(logger)
+	cfg, err := config.NewConfig()
+	if err != nil {
+		logger.Fatal("invalid configuration", zap.Error(err))
+	}
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 

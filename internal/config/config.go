@@ -1,9 +1,8 @@
 package config
 
 import (
+	"fmt"
 	"os"
-
-	"go.uber.org/zap"
 )
 
 type Config struct {
@@ -17,7 +16,7 @@ type Config struct {
 	DatabaseType   string
 }
 
-func NewConfig(logger *zap.Logger) *Config {
+func NewConfig() (*Config, error) {
 	var privKey []byte
 	var pubKey []byte
 	var err error
@@ -26,7 +25,7 @@ func NewConfig(logger *zap.Logger) *Config {
 	} else {
 		privKey, err = os.ReadFile("keys/private.pem")
 		if err != nil {
-			logger.Info("private.pem faylini o'qishda xatolik yuz berdi: ", zap.Error(err))
+			return nil, fmt.Errorf("read RSA private key: %w", err)
 		}
 	}
 	if os.Getenv("PUBLIC_KEY") != "" {
@@ -34,11 +33,11 @@ func NewConfig(logger *zap.Logger) *Config {
 	} else {
 		pubKey, err = os.ReadFile("keys/public.pem")
 		if err != nil {
-			logger.Info("public.pem faylini o'qishda xatolik yuz berdi: ", zap.Error(err))
+			return nil, fmt.Errorf("read RSA public key: %w", err)
 		}
 	}
 
-	return &Config{
+	cfg := &Config{
 		PrivateKey:     privKey,
 		PublicKey:      pubKey,
 		Addr:           os.Getenv("ADDR"),
@@ -48,4 +47,17 @@ func NewConfig(logger *zap.Logger) *Config {
 		DatabaseType:   os.Getenv("DATABASE_TYPE"),
 		DatabaseDsn:    os.Getenv("DATABASE_DSN"),
 	}
+	if len(cfg.PrivateKey) == 0 || len(cfg.PublicKey) == 0 {
+		return nil, fmt.Errorf("RSA private and public keys must not be empty")
+	}
+	if cfg.Addr == "" {
+		cfg.Addr = ":8080"
+	}
+	if cfg.DatabaseType != "postgres" && cfg.DatabaseType != "sqlite" {
+		return nil, fmt.Errorf("DATABASE_TYPE must be postgres or sqlite")
+	}
+	if cfg.DatabaseType == "postgres" && cfg.DatabaseDsn == "" {
+		return nil, fmt.Errorf("DATABASE_DSN is required for postgres")
+	}
+	return cfg, nil
 }
